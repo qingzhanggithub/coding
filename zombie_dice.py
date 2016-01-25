@@ -59,7 +59,7 @@ class zombie_dice:
             print '### p_draw : ', p_draw
             new_p = np.asarray(p) + foot
             print '### path\t', new_p
-            t = []
+            t = [] # creating dice table
             for i in range(3) :
                 for k in range(new_p[i]):
                     t.append(self.probas[i])
