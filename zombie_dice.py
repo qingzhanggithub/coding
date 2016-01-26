@@ -57,15 +57,22 @@ class zombie_dice:
             # compute the proba of getting this particular draw
             p_draw = self.prob_draw(ns, p)
             print '### p_draw : ', p_draw
-            new_p = np.asarray(p) + foot
+
+            new_p = np.asarray(p) + foot # combining with foot of current draw
             print '### path\t', new_p
+            
             t = [] # creating dice table
             for i in range(3) :
                 for k in range(new_p[i]):
                     t.append(self.probas[i])
                     print 'appending to t ', self.probas[i]
             tt = np.asarray(t) # column is surface
-            proba_states  += p_draw * self.suf_proba(suf_paths, tt) # proba of all possible surfaces configs within this draw
+
+            # proba of all possible surfaces configs within this draw
+            # prob(suf_j) = by sum_{i}(prob(color_i) * prob(suf_j | color_i))
+            # proba_states is a list of prob(color_i)
+            proba_states  += p_draw * self.suf_proba(suf_paths, tt) 
+            
             
         for i in range(len(suf_paths)):
             print suf_paths[i], '\t:\t', proba_states[i]
@@ -73,12 +80,12 @@ class zombie_dice:
     def suf_proba(self, suf_paths, dice_table) :
         proba_all =[]
         for p in suf_paths :
-            p_state = 0
+            p_state = 0 # prob(suf_j) = sum_{i}(prob(assign_i | surf_path_j))
             assns = []
             print 'getting assignment for suf_path ', p
             self.assign_dice_to_surface([-1,-1,-1], 0, copy.copy(p), assns)
             for assign in assns :
-                proba = 1
+                proba = 1 # prob(assign_i | surf_path_j ) = product_{k}(prob(color_of_dice_k, suf_of_dice_k))
                 for i in range(3):
                     proba *= dice_table[i,assign[i]]
                 p_state += proba
